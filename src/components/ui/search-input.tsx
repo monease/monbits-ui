@@ -1,9 +1,9 @@
+import { SearchIcon, XIcon } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { SearchIcon, XIcon } from "lucide-react";
 import { cn } from "../../lib/utils";
-import { Input } from "./input";
 import { Button } from "./button";
+import { Input } from "./input";
 
 interface SearchInputProps {
 	placeholder?: string;
@@ -24,6 +24,7 @@ export function SearchInput({
 	const isInitialMount = useRef(true);
 
 	// Sync local state with URL params (for external changes like browser back/forward)
+	// biome-ignore lint/correctness/useExhaustiveDependencies: intentionally omit `value` to avoid infinite loop - we only sync from URL to state
 	useEffect(() => {
 		const currentValue = searchParams.get(paramName) || "";
 		if (currentValue !== value) {
