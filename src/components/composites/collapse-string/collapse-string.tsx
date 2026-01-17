@@ -1,9 +1,5 @@
 import type * as React from "react";
-import {
-	Popover,
-	PopoverContent,
-	PopoverTrigger,
-} from "../../ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
 
 interface Props {
 	text: string;

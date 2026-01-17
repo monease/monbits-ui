@@ -124,67 +124,64 @@ export function useUrlState<T extends UrlStateSchema>(
 	}, [searchParams]);
 
 	// Update URL when state changes
-	const updateState = useCallback(
-		(newState: Partial<InferStateType<T>>) => {
-			const currentSchema = schemaRef.current;
-			const newParams = new URLSearchParams(window.location.search);
+	const updateState = useCallback((newState: Partial<InferStateType<T>>) => {
+		const currentSchema = schemaRef.current;
+		const newParams = new URLSearchParams(window.location.search);
 
-			for (const [key, value] of Object.entries(newState)) {
-				const config = currentSchema[key];
-				if (!config) continue;
+		for (const [key, value] of Object.entries(newState)) {
+			const config = currentSchema[key];
+			if (!config) continue;
 
-				// Check if value is default (to omit from URL)
-				const isDefault =
-					config.type === "array"
-						? Array.isArray(value) &&
-							Array.isArray(config.default) &&
-							value.length === 0 &&
-							config.default.length === 0
-						: value === config.default;
+			// Check if value is default (to omit from URL)
+			const isDefault =
+				config.type === "array"
+					? Array.isArray(value) &&
+						Array.isArray(config.default) &&
+						value.length === 0 &&
+						config.default.length === 0
+					: value === config.default;
 
-				if (isDefault) {
-					newParams.delete(key);
+			if (isDefault) {
+				newParams.delete(key);
+			} else {
+				let urlValue: string;
+
+				switch (config.type) {
+					case "string":
+						urlValue = String(value);
+						break;
+
+					case "number":
+						urlValue = String(value);
+						break;
+
+					case "boolean":
+						urlValue = value ? "true" : "false";
+						break;
+
+					case "array":
+						urlValue = Array.isArray(value) ? value.join(",") : "";
+						break;
+
+					default:
+						urlValue = String(value);
+				}
+
+				if (urlValue) {
+					newParams.set(key, urlValue);
 				} else {
-					let urlValue: string;
-
-					switch (config.type) {
-						case "string":
-							urlValue = String(value);
-							break;
-
-						case "number":
-							urlValue = String(value);
-							break;
-
-						case "boolean":
-							urlValue = value ? "true" : "false";
-							break;
-
-						case "array":
-							urlValue = Array.isArray(value) ? value.join(",") : "";
-							break;
-
-						default:
-							urlValue = String(value);
-					}
-
-					if (urlValue) {
-						newParams.set(key, urlValue);
-					} else {
-						newParams.delete(key);
-					}
+					newParams.delete(key);
 				}
 			}
+		}
 
-			// Update URL using History API
-			const newUrl = `${window.location.pathname}?${newParams.toString()}`;
-			window.history.pushState({}, "", newUrl);
+		// Update URL using History API
+		const newUrl = `${window.location.pathname}?${newParams.toString()}`;
+		window.history.pushState({}, "", newUrl);
 
-			// Trigger popstate event to notify other listeners
-			window.dispatchEvent(new PopStateEvent("popstate"));
-		},
-		[],
-	);
+		// Trigger popstate event to notify other listeners
+		window.dispatchEvent(new PopStateEvent("popstate"));
+	}, []);
 
 	return [state, updateState];
 }

@@ -67,7 +67,9 @@
 	--mb-color-sidebar: var(--color-sidebar);
 	--mb-color-sidebar-foreground: var(--color-sidebar-foreground);
 	--mb-color-sidebar-primary: var(--color-sidebar-primary);
-	--mb-color-sidebar-primary-foreground: var(--color-sidebar-primary-foreground);
+	--mb-color-sidebar-primary-foreground: var(
+		--color-sidebar-primary-foreground
+	);
 	--mb-color-sidebar-accent: var(--color-sidebar-accent);
 	--mb-color-sidebar-accent-foreground: var(--color-sidebar-accent-foreground);
 	--mb-color-sidebar-border: var(--color-sidebar-border);

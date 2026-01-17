@@ -1,8 +1,8 @@
-export { CopyButton } from "./copy-button";
-export { DetailRow } from "./detail-row";
-export { StatusBadge } from "./status-badge";
+export { CollapseString } from "./collapse-string";
 export { ConfirmationDialog } from "./confirmation-dialog";
+export { CopyButton } from "./copy-button";
 export { DeleteConfirmationDialog } from "./delete-confirmation-dialog";
+export { DetailRow } from "./detail-row";
 export { ErrorBoundary } from "./error-boundary";
 export { Loader } from "./loader";
-export { CollapseString } from "./collapse-string";
+export { StatusBadge } from "./status-badge";

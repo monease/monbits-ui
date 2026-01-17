@@ -92,7 +92,9 @@ export function DeleteConfirmationDialog({
 						<Input
 							id={inputId}
 							value={inputValue}
-							onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInputValue(e.target.value)}
+							onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+								setInputValue(e.target.value)
+							}
 							placeholder={confirmText}
 							autoComplete="off"
 							disabled={isDeleting}
