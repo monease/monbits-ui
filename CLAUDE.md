@@ -1,51 +1,62 @@
-# CLAUDE.md - @monbits/ui
-
-UI component library guidance for Claude Code.
+# CLAUDE.md - @monease/monbits-ui
 
 ## Package Overview
 
-**Package Name**: `@monbits/ui`
-**Version**: 0.1.0
-**Type**: React UI Component Library
-**Philosophy**: shadcn/ui architecture (copy, paste, own your components)
+| | |
+|---|---|
+| **Package** | `@monease/monbits-ui` |
+| **Registry** | GitHub Packages (public) |
+| **Version** | 0.2.0 |
 
-Built on Radix UI primitives, Tailwind CSS v4, and class-variance-authority for type-safe component variants.
+React UI component library following shadcn/ui patterns. Built on Radix UI primitives, Tailwind CSS v4, and class-variance-authority.
 
 ## Project Structure
 
-| Path | Purpose |
-|------|---------|
-| `/src/components/ui/` | UI component implementations (32 components) |
-| `/src/components/index.ts` | Component exports |
-| `/src/hooks/` | React hooks (useMobile, useUrlState, useUrlPagination, useWindowSize) |
-| `/src/lib/utils.ts` | Utility functions (`cn()` for class merging) |
-| `/src/styles/globals.css` | Tailwind CSS v4 theme and global styles |
-| `/src/index.ts` | Package entry point |
-| `/dist/` | Build output (generated, do not edit) |
-| `vite.config.ts` | Vite build configuration |
-| `tsconfig.json` | TypeScript configuration |
+```
+src/
+├── components/
+│   ├── ui/           # 32 UI primitives (button, card, dialog, etc.)
+│   ├── composites/   # 8 composed components (loader, status-badge, etc.)
+│   └── index.ts      # Component exports
+├── hooks/            # 4 React hooks
+├── lib/              # Utilities (cn, toast helpers)
+├── styles/
+│   └── globals.css   # Tailwind v4 theme
+└── index.ts          # Package entry point
+```
 
-## Build and Development
+## Commands
 
-| Command | Description |
-|---------|-------------|
-| `bun install` | Install dependencies |
-| `bun run build` | Build library for production (outputs to `/dist/`) |
-| `bun run dev` | Watch mode for development (auto-rebuild on changes) |
+```bash
+npm install    # Install dependencies
+npm run build  # Build to /dist
+npm run dev    # Watch mode
+npm publish    # Publish to GitHub Packages
+```
 
-**Important**: After changes to `/src/`, always run `bun run build` to regenerate `/dist/`.
+## Dependencies
 
-## Component Architecture
+### Bundled (included in package)
 
-### Pattern: CVA + Radix + Tailwind
+- All `@radix-ui/*` packages
+- `class-variance-authority`, `clsx`, `tailwind-merge`
+- `input-otp`, `react-day-picker`, `sonner`, `vaul`
 
-Components follow this structure:
+### Peer Dependencies (consumer installs)
+
+- `react`, `react-dom`
+- `lucide-react`
+- `next-themes`
+- `react-hook-form`
+- `zod`
+
+## Component Pattern
 
 ```tsx
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "../../lib/utils";
 
-const componentVariants = cva("base-classes", {
+const buttonVariants = cva("base-classes", {
   variants: {
     variant: { default: "...", destructive: "..." },
     size: { sm: "...", default: "...", lg: "..." }
@@ -53,317 +64,90 @@ const componentVariants = cva("base-classes", {
   defaultVariants: { variant: "default", size: "default" }
 });
 
-function Component({ className, variant, size, ...props }: Props & VariantProps<typeof componentVariants>) {
-  return <div className={cn(componentVariants({ variant, size, className }))} {...props} />;
+function Button({ className, variant, size, ...props }) {
+  return <button className={cn(buttonVariants({ variant, size, className }))} {...props} />;
 }
 
-export { Component, componentVariants };
+export { Button, buttonVariants };
 ```
 
-**Key Principles**:
-1. **Export variant functions** (`buttonVariants`, etc.) for reuse
-2. **Use `cn()` for class merging** (from `lib/utils.ts`)
-3. **Support `asChild` prop** for polymorphic rendering (via Radix Slot)
-4. **Export TypeScript types** alongside components
-
-### Component Files
-
-| Component | File | Description |
-|-----------|------|-------------|
-| Alert | `alert.tsx` | Callout/notification component |
-| Avatar | `avatar.tsx` | User avatar with fallback |
-| Badge | `badge.tsx` | Status/label indicator |
-| Breadcrumb | `breadcrumb.tsx` | Navigation breadcrumbs |
-| Button | `button.tsx` | Primary interactive element |
-| Calendar | `calendar.tsx` | Date picker (react-day-picker) |
-| Card | `card.tsx` | Content container |
-| Checkbox | `checkbox.tsx` | Checkbox input |
-| Descriptions | `descriptions.tsx` | Key-value pair display |
-| Dialog | `dialog.tsx` | Modal dialog (Radix Dialog) |
-| Drawer | `drawer.tsx` | Bottom sheet (vaul) |
-| Dropdown Menu | `dropdown-menu.tsx` | Context menu (Radix DropdownMenu) |
-| Field | `field.tsx` | Form field wrapper |
-| Form | `form.tsx` | Form wrapper (react-hook-form) |
-| Icons | `icons.tsx` | Icon set (lucide-react) |
-| Input | `input.tsx` | Text input |
-| InputOTP | `input-otp.tsx` | OTP input (input-otp) |
-| Label | `label.tsx` | Form label (Radix Label) |
-| Popover | `popover.tsx` | Floating overlay (Radix Popover) |
-| Select | `select.tsx` | Dropdown select (Radix Select) |
-| Separator | `separator.tsx` | Visual divider (Radix Separator) |
-| Sheet | `sheet.tsx` | Side panel (Radix Dialog variant) |
-| Sidebar | `sidebar.tsx` | Application sidebar |
-| Skeleton | `skeleton.tsx` | Loading placeholder |
-| Sonner | `sonner.tsx` | Toast notifications (sonner) |
-| Spinner | `spinner.tsx` | Loading spinner |
-| Switch | `switch.tsx` | Toggle switch (Radix Switch) |
-| Table | `table.tsx` | Data table |
-| Tabs | `tabs.tsx` | Tabbed interface (Radix Tabs) |
-| Textarea | `textarea.tsx` | Multi-line input |
-| Toggle | `toggle.tsx` | Toggle button (Radix Toggle) |
-| Tooltip | `tooltip.tsx` | Hover tooltip (Radix Tooltip) |
-
-## Styling System
-
-### Tailwind CSS v4 Configuration
-
-**File**: `/src/styles/globals.css`
-
-Uses `@import "tailwindcss"` and `@theme inline` block for theme configuration.
-
-**CSS Variable System**:
-
-| Variable Prefix | Purpose |
-|-----------------|---------|
-| `--color-*` | Tailwind color tokens (e.g., `--color-primary`) |
-| `--mb-color-*` | Namespaced aliases to avoid conflicts |
-| `--radius-*` | Border radius scale (`sm`, `md`, `lg`, `xl`) |
-| `--mb-radius-*` | Namespaced radius aliases |
-
-**Dark Mode**: Implemented via `.dark` class selector using `@custom-variant dark (&:is(.dark *))`.
-
-### Theme Customization
-
-Consumers can override CSS variables in their own stylesheets:
-
-```css
-:root {
-  --primary: oklch(0.6 0.3 270);  /* Custom purple */
-  --radius: 0.25rem;  /* Smaller radius */
-}
-```
-
-### Color System
-
-All colors use OKLCH color space for perceptually uniform gradients.
-
-**Theme Colors**:
-- `background`, `foreground`
-- `card`, `card-foreground`
-- `popover`, `popover-foreground`
-- `primary`, `primary-foreground`
-- `secondary`, `secondary-foreground`
-- `muted`, `muted-foreground`
-- `accent`, `accent-foreground`
-- `destructive`
-- `border`, `input`, `ring`
-- `chart-1` through `chart-5`
-- `sidebar-*` (sidebar-specific colors)
-
-## Utilities
-
-### `cn()` Function
-
-**Location**: `/src/lib/utils.ts`
-
-```ts
-import { type ClassValue, clsx } from "clsx";
-import { twMerge } from "tailwind-merge";
-
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
-}
-```
-
-**Purpose**: Intelligently merge Tailwind classes (handles conflicts like `px-2 px-4` → `px-4`).
-
-**Usage**:
-```tsx
-cn("text-sm font-medium", className)
-cn("p-4", isActive && "bg-primary")
-```
-
-## Hooks
-
-| Hook | File | Description |
-|------|------|-------------|
-| `useMobile` | `use-mobile.ts` | Detects mobile viewport (<768px) |
-| `useUrlPagination` | `use-url-pagination.ts` | URL-based pagination state |
-| `useUrlState` | `use-url-state.ts` | Sync state with URL params |
-| `useWindowSize` | `use-window-size.ts` | Window dimensions tracking |
-
-## Package Exports
-
-### Main Export
-
-```ts
-// src/index.ts
-export * from "./components";
-export * from "./hooks";
-export * from "./lib";
-```
-
-**Consumer Usage**:
-```tsx
-import { Button, Card, cn, useMobile } from '@monbits/ui';
-import '@monbits/ui/styles.css';
-```
-
-### Export Configuration
-
-**File**: `package.json`
-
-| Export Path | Resolves To | Purpose |
-|-------------|-------------|---------|
-| `.` | `dist/index.js` | Main entry (all exports) |
-| `./styles.css` | `src/styles/globals.css` | Stylesheet import |
-| `./components/*` | `dist/components/*.js` | Individual components |
-| `./hooks/*` | `dist/hooks/*.js` | Individual hooks |
-
-## Dependencies
-
-### Core Dependencies
-
-| Package | Version | Purpose |
-|---------|---------|---------|
-| `class-variance-authority` | ^0.7.1 | Type-safe component variants |
-| `clsx` | ^2.1.1 | Conditional class names |
-| `tailwind-merge` | ^3.3.1 | Intelligent Tailwind class merging |
-
-### Peer Dependencies (Consumer Must Install)
-
-| Package | Version | Purpose |
-|---------|---------|---------|
-| `react` | ^19.0.0 | React framework |
-| `react-dom` | ^19.0.0 | React DOM rendering |
-| `@radix-ui/*` | Various | Headless UI primitives |
-| `lucide-react` | ^0.545.0 | Icon library |
-| `input-otp` | ^1.4.2 | OTP input component |
-| `next-themes` | ^0.4.6 | Theme switching |
-| `react-day-picker` | ^9.11.1 | Calendar/date picker |
-| `react-hook-form` | ^7.0.0 | Form state management |
-| `sonner` | ^2.0.0 | Toast notifications |
-| `vaul` | ^1.1.2 | Drawer component |
-| `zod` | ^4.0.0 | Schema validation |
-
-**Important**: Consumers must install all peer dependencies and configure Tailwind to scan `./node_modules/@monbits/ui/**/*.{js,ts,jsx,tsx}`.
-
-## Development Workflow
-
-### Adding New Components
-
-1. Create component file in `/src/components/ui/{name}.tsx`
-2. Export from `/src/components/ui/index.ts`
-3. Build: `bun run build`
-4. Test in consumer project
-
-### Modifying Existing Components
-
-1. Edit component in `/src/components/ui/{name}.tsx`
-2. Rebuild: `bun run build`
-3. Verify TypeScript types: Check `/dist/{name}.d.ts`
-
-### Updating Styles
-
-1. Edit `/src/styles/globals.css`
-2. Rebuild: `bun run build`
-3. Consumers must re-import stylesheet
-
-## TypeScript Configuration
-
-**File**: `tsconfig.json`
-
-| Setting | Value | Reason |
-|---------|-------|--------|
-| `target` | `ES2020` | Modern JavaScript features |
-| `module` | `ESNext` | ESM modules |
-| `jsx` | `react-jsx` | React 17+ JSX transform |
-| `declaration` | `true` | Generate `.d.ts` files |
-| `skipLibCheck` | `true` | Faster builds |
+**Key patterns:**
+- Export variant functions for reuse
+- Use `cn()` for class merging
+- Support `asChild` prop via Radix Slot
+- Export TypeScript types
 
 ## Build Configuration
 
-**File**: `vite.config.ts`
+**vite.config.ts** - Library mode
 
-**Mode**: Library mode (not application)
+| Output | Format |
+|--------|--------|
+| `dist/index.js` | ESM |
+| `dist/index.cjs` | CommonJS |
+| `dist/*.d.ts` | TypeScript declarations |
 
-**Outputs**:
-- `dist/index.js` (ESM)
-- `dist/index.cjs` (CommonJS)
-- `dist/index.d.ts` (TypeScript definitions)
+**Externals** (not bundled):
+- `react`, `react-dom`, `react/jsx-runtime`
+- `lucide-react`, `next-themes`
+- `react-hook-form`, `zod`
 
-**Externals**: All dependencies and peer dependencies are external (not bundled).
+## Consumer Integration
 
-## Consumer Integration Requirements
+### 1. Add registry
 
-### Critical Steps for Consumers
+```bash
+echo "@monease:registry=https://npm.pkg.github.com" > .npmrc
+```
 
-1. **Install peer dependencies** (see list above)
-2. **Add Tailwind content path**:
-   ```js
-   content: ["./node_modules/@monbits/ui/**/*.{js,ts,jsx,tsx}"]
-   ```
-3. **Import stylesheet**:
-   ```tsx
-   import '@monbits/ui/styles.css';
-   ```
-4. **Optional: Configure theme** (override CSS variables)
+### 2. Install
 
-## Naming Conventions
+```bash
+npm install @monease/monbits-ui
+npm install react react-dom lucide-react next-themes react-hook-form zod
+```
 
-| Element | Convention | Example |
-|---------|------------|---------|
-| Component files | `kebab-case.tsx` | `dropdown-menu.tsx` |
-| Component names | `PascalCase` | `DropdownMenu` |
-| Variant functions | `{name}Variants` | `buttonVariants` |
-| Utility functions | `camelCase` | `cn()` |
-| Hook files | `use-{name}.ts` | `use-mobile.ts` |
-| Hook names | `use{Name}` | `useMobile` |
+### 3. Configure Tailwind v4
 
-## Testing in Consumer Projects
+```css
+@import "tailwindcss";
+@source "../../node_modules/@monease/monbits-ui/dist";
+```
 
-To test changes before publishing:
+### 4. Use components
 
-1. Build library: `cd monbits-ui && bun run build`
-2. Link locally: `bun link` (in library directory)
-3. Link in consumer: `bun link @monbits/ui` (in app directory)
-4. Verify imports work and styles render
+```tsx
+import { Button, Card, cn } from "@monease/monbits-ui";
+```
 
-## Important Notes
+## Styling
 
-### Do Not Edit Generated Files
+### CSS Variables
 
-| Path | Status |
-|------|--------|
-| `/dist/*` | Generated by Vite (overwritten on build) |
-| `bun.lock` | Managed by Bun package manager |
+Theme uses OKLCH color space. Override in consumer's CSS:
 
-### Breaking Changes to Avoid
+```css
+:root {
+  --primary: oklch(0.6 0.25 260);
+  --radius: 0.5rem;
+}
+```
 
-- Renaming exported components
-- Removing variant options
-- Changing `cn()` function signature
-- Removing CSS variables consumers may override
+### Dark Mode
 
-### Accessibility
+Via `.dark` class with `@custom-variant dark (&:is(.dark *))`.
 
-All components use Radix UI primitives, which provide:
-- ARIA attributes
-- Keyboard navigation
-- Focus management
-- Screen reader support
+## Adding Components
 
-Do not remove or override accessibility features.
+1. Create `/src/components/ui/{name}.tsx`
+2. Export from `/src/components/ui/index.ts`
+3. Run `npm run build`
+4. Bump version in `package.json`
+5. Run `npm publish`
 
-## Dependencies Update Strategy
+## Important
 
-| Dependency | Update Strategy |
-|------------|-----------------|
-| Radix UI packages | Pin minor versions (breaking changes possible) |
-| Tailwind | Follow v4 releases (currently in beta) |
-| React | Pin to 19.x (peer dependency) |
-| Lucide icons | Patch updates safe |
-
-## Future Considerations
-
-Potential enhancements (not currently implemented):
-
-- Storybook documentation
-- Visual regression testing
-- Component usage analytics
-- CSS-in-JS variant (non-Tailwind)
-- Server component compatibility (React Server Components)
-
----
-
-**Philosophy**: This library follows shadcn/ui principles. Components are meant to be **owned** by consumers. When in doubt, favor flexibility and customization over rigid abstractions.
+- **Don't edit `/dist/`** - generated by build
+- **Don't remove CSS variables** - consumers may depend on them
+- **Don't rename exports** - breaking change
+- **Keep Radix accessibility** - don't override ARIA attributes
