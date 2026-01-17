@@ -4,14 +4,14 @@ A composable, Linear-style filter builder component for data tables. Filters app
 
 ## Installation
 
-The FilterBuilder is included in `@monease/monbits-ui`. Import the components and hooks:
+The FilterBuilder is included in `@monbits/ui`. Import the components and hooks:
 
 ```tsx
 import {
   FilterBuilder,
   FilterField,
   useFilterBuilder,
-} from "@monease/monbits-ui";
+} from "@monbits/ui";
 ```
 
 ## Basic Usage (with URL Sync)
@@ -23,7 +23,7 @@ import {
   FilterBuilder,
   type FilterField,
   useFilterBuilder,
-} from "@monease/monbits-ui";
+} from "@monbits/ui";
 import { Clock, DollarSign } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
 
@@ -179,7 +179,7 @@ import {
   FilterBuilder,
   type FilterField,
   useFilterBuilder,
-} from "@monease/monbits-ui";
+} from "@monbits/ui";
 import { Clock, Coins, DollarSign, FlaskConical } from "lucide-react";
 import * as React from "react";
 import { CryptoIcon } from "src/components/crypto-icon/crypto-icon";

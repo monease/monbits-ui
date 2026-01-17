@@ -1,17 +1,11 @@
-# @monease/monbits-ui
+# @monbits/ui
 
 A React UI component library built on [shadcn/ui](https://ui.shadcn.com/) patterns with Radix UI primitives and Tailwind CSS v4.
 
 ## Installation
 
-This package is hosted on GitHub Packages. Add the registry to your project:
-
 ```bash
-# Create .npmrc in your project root
-echo "@monease:registry=https://npm.pkg.github.com" > .npmrc
-
-# Install the package
-npm install @monease/monbits-ui
+npm install @monbits/ui
 ```
 
 ### Peer Dependencies
@@ -31,7 +25,7 @@ Add the `@source` directive to your CSS file to scan the package for Tailwind cl
 ```css
 @import "tailwindcss";
 
-@source "../node_modules/@monease/monbits-ui/src";
+@source "../node_modules/@monbits/ui/src";
 ```
 
 The path is relative to your CSS file. For a typical setup with CSS at `src/app.css`, use `../node_modules/...` to reach `node_modules/` at the project root.
@@ -39,7 +33,7 @@ The path is relative to your CSS file. For a typical setup with CSS at `src/app.
 ## Usage
 
 ```tsx
-import { Button, Card, CardHeader, CardTitle, CardContent } from "@monease/monbits-ui";
+import { Button, Card, CardHeader, CardTitle, CardContent } from "@monbits/ui";
 
 function App() {
   return (
@@ -58,7 +52,7 @@ function App() {
 ### Utilities
 
 ```tsx
-import { cn } from "@monease/monbits-ui";
+import { cn } from "@monbits/ui";
 
 // Merge Tailwind classes intelligently
 <div className={cn("p-4", isActive && "bg-primary")} />
@@ -67,7 +61,7 @@ import { cn } from "@monease/monbits-ui";
 ### Variant Functions
 
 ```tsx
-import { buttonVariants } from "@monease/monbits-ui";
+import { buttonVariants } from "@monbits/ui";
 
 // Apply button styles to any element
 <a href="/home" className={buttonVariants({ variant: "outline", size: "sm" })}>
@@ -87,11 +81,13 @@ import { buttonVariants } from "@monease/monbits-ui";
 | Calendar | Date picker |
 | Card | Content container |
 | Checkbox | Checkbox input |
+| DataTable | Data table with pagination |
 | Descriptions | Key-value display |
 | Dialog | Modal overlay |
 | Drawer | Bottom sheet (mobile-friendly) |
 | DropdownMenu | Context menu |
 | Field | Form field wrapper |
+| FilterBuilder | Linear-style filter chips |
 | Form | Form with react-hook-form |
 | Icons | Icon set (lucide-react) |
 | Input | Text input |
@@ -116,6 +112,7 @@ import { buttonVariants } from "@monease/monbits-ui";
 
 | Hook | Description |
 |------|-------------|
+| `useFilterBuilder` | Filter state with URL sync |
 | `useMobile` | Detect mobile viewport |
 | `useUrlPagination` | URL-based pagination |
 | `useUrlState` | Sync state with URL params |
