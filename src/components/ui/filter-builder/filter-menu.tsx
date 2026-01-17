@@ -156,7 +156,7 @@ export function FilterMenu({ fields, onAddFilter }: FilterMenuProps) {
 			<PopoverTrigger asChild>
 				<button
 					type="button"
-					className="inline-flex items-center gap-1.5 h-7 px-2.5 text-sm text-muted-foreground hover:text-foreground border hover:bg-muted/40 rounded-full transition-colors"
+					className="inline-flex items-center gap-1.5 h-8 px-3 text-sm text-muted-foreground hover:text-foreground border border-input hover:bg-muted/40 rounded-full transition-colors"
 				>
 					<Filter className="h-3.5 w-3.5" />
 					<span>Filter</span>

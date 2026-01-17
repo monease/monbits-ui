@@ -85,7 +85,6 @@ export interface UseUrlPaginationReturn extends PaginationState {
  * - Validates limit against allowed values
  * - Provides navigation helpers (nextPage, previousPage, etc.)
  * - Auto-corrects invalid page numbers
- * - No React Router dependency (uses vanilla History API)
  *
  * @param options - Configuration options
  * @returns Pagination state and controls

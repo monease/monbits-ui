@@ -19,6 +19,7 @@ export default defineConfig({
 				"react",
 				"react-dom",
 				"react/jsx-runtime",
+				"react-router-dom",
 				"lucide-react",
 				"next-themes",
 				"react-hook-form",

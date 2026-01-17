@@ -33,3 +33,4 @@ export * from "./tabs";
 export * from "./textarea";
 export * from "./toggle";
 export * from "./tooltip";
+export * from "./search-input";

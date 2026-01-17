@@ -1,4 +1,5 @@
-import { useCallback, useMemo, useRef, useSyncExternalStore } from "react";
+import { useCallback, useMemo, useRef } from "react";
+import { useSearchParams } from "react-router-dom";
 
 export interface UrlStateConfig<T = unknown> {
 	type: "string" | "number" | "boolean" | "array";
@@ -13,22 +14,6 @@ type InferStateType<T extends UrlStateSchema> = {
 };
 
 /**
- * Subscribe to URL search params changes using the History API.
- * This allows us to sync state with URL without React Router.
- */
-function subscribeToUrlChanges(callback: () => void): () => void {
-	window.addEventListener("popstate", callback);
-	return () => window.removeEventListener("popstate", callback);
-}
-
-/**
- * Get the current URL search params snapshot.
- */
-function getUrlSearchParams(): URLSearchParams {
-	return new URLSearchParams(window.location.search);
-}
-
-/**
  * Custom hook that syncs React state with URL query parameters.
  *
  * Features:
@@ -39,7 +24,6 @@ function getUrlSearchParams(): URLSearchParams {
  * - Updates URL when setState is called
  * - Validates values against optional validator function
  * - Invalid values reset to defaults
- * - No React Router dependency (uses vanilla History API)
  *
  * @template T - The schema type
  * @param schema - Configuration object defining the state structure
@@ -58,14 +42,8 @@ function getUrlSearchParams(): URLSearchParams {
 export function useUrlState<T extends UrlStateSchema>(
 	schema: T,
 ): [InferStateType<T>, (newState: Partial<InferStateType<T>>) => void] {
+	const [searchParams, setSearchParams] = useSearchParams();
 	const schemaRef = useRef(schema);
-
-	// Use useSyncExternalStore to subscribe to URL changes
-	const searchParams = useSyncExternalStore(
-		subscribeToUrlChanges,
-		getUrlSearchParams,
-		getUrlSearchParams,
-	);
 
 	// Derive state directly from URL params - no separate useState needed
 	const state = useMemo((): InferStateType<T> => {
@@ -124,64 +102,66 @@ export function useUrlState<T extends UrlStateSchema>(
 	}, [searchParams]);
 
 	// Update URL when state changes
-	const updateState = useCallback((newState: Partial<InferStateType<T>>) => {
-		const currentSchema = schemaRef.current;
-		const newParams = new URLSearchParams(window.location.search);
+	const updateState = useCallback(
+		(newState: Partial<InferStateType<T>>) => {
+			const currentSchema = schemaRef.current;
+			setSearchParams((prevParams) => {
+				const newParams = new URLSearchParams(prevParams);
 
-		for (const [key, value] of Object.entries(newState)) {
-			const config = currentSchema[key];
-			if (!config) continue;
+				for (const [key, value] of Object.entries(newState)) {
+					const config = currentSchema[key];
+					if (!config) continue;
 
-			// Check if value is default (to omit from URL)
-			const isDefault =
-				config.type === "array"
-					? Array.isArray(value) &&
-						Array.isArray(config.default) &&
-						value.length === 0 &&
-						config.default.length === 0
-					: value === config.default;
+					// Check if value is default (to omit from URL)
+					const isDefault =
+						config.type === "array"
+							? Array.isArray(value) &&
+								Array.isArray(config.default) &&
+								value.length === 0 &&
+								config.default.length === 0
+							: value === config.default;
 
-			if (isDefault) {
-				newParams.delete(key);
-			} else {
-				let urlValue: string;
+					if (isDefault) {
+						newParams.delete(key);
+					} else {
+						let urlValue: string;
 
-				switch (config.type) {
-					case "string":
-						urlValue = String(value);
-						break;
+						switch (config.type) {
+							case "string":
+								urlValue = String(value);
+								break;
 
-					case "number":
-						urlValue = String(value);
-						break;
+							case "number":
+								urlValue = String(value);
+								break;
 
-					case "boolean":
-						urlValue = value ? "true" : "false";
-						break;
+							case "boolean":
+								urlValue = value ? "true" : "false";
+								break;
 
-					case "array":
-						urlValue = Array.isArray(value) ? value.join(",") : "";
-						break;
+							case "array":
+								urlValue = Array.isArray(value) ? value.join(",") : "";
+								break;
 
-					default:
-						urlValue = String(value);
+							default:
+								urlValue = String(value);
+						}
+
+						if (urlValue) {
+							newParams.set(key, urlValue);
+						} else {
+							newParams.delete(key);
+						}
+					}
 				}
 
-				if (urlValue) {
-					newParams.set(key, urlValue);
-				} else {
-					newParams.delete(key);
-				}
-			}
-		}
-
-		// Update URL using History API
-		const newUrl = `${window.location.pathname}?${newParams.toString()}`;
-		window.history.pushState({}, "", newUrl);
-
-		// Trigger popstate event to notify other listeners
-		window.dispatchEvent(new PopStateEvent("popstate"));
-	}, []);
+				return newParams;
+			});
+		},
+		[setSearchParams],
+	);
 
 	return [state, updateState];
 }
+
+export default useUrlState;

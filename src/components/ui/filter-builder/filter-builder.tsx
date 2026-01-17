@@ -64,10 +64,10 @@ export function FilterBuilder({
 				<button
 					type="button"
 					onClick={handleClearAll}
-					className="p-1 text-muted-foreground hover:text-foreground hover:bg-muted/60 rounded-full transition-colors"
+					className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted/60 rounded-full transition-colors shrink-0"
 					title="Clear all filters"
 				>
-					<X className="h-3.5 w-3.5" />
+					<X className="h-4 w-4" />
 				</button>
 			)}
 		</div>
