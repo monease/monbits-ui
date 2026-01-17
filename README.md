@@ -31,10 +31,10 @@ Add the `@source` directive to your CSS file to scan the package for Tailwind cl
 ```css
 @import "tailwindcss";
 
-@source "../../node_modules/@monease/monbits-ui/dist";
+@source "../node_modules/@monease/monbits-ui/src";
 ```
 
-Adjust the path based on your CSS file location relative to `node_modules`.
+The path is relative to your CSS file. For a typical setup with CSS at `src/app.css`, use `../node_modules/...` to reach `node_modules/` at the project root.
 
 ## Usage
 

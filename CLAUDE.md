@@ -6,7 +6,7 @@
 |---|---|
 | **Package** | `@monease/monbits-ui` |
 | **Registry** | GitHub Packages (public) |
-| **Version** | 0.2.0 |
+| **Version** | 0.2.1 |
 
 React UI component library following shadcn/ui patterns. Built on Radix UI primitives, Tailwind CSS v4, and class-variance-authority.
 
@@ -111,8 +111,10 @@ npm install react react-dom lucide-react next-themes react-hook-form zod
 
 ```css
 @import "tailwindcss";
-@source "../../node_modules/@monease/monbits-ui/dist";
+@source "../node_modules/@monease/monbits-ui/src";
 ```
+
+Path is relative to CSS file. Use `src` not `dist` (Tailwind needs source files to scan classes).
 
 ### 4. Use components
 
