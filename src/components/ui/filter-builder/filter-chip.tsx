@@ -73,7 +73,7 @@ export function FilterChip({
 	return (
 		<div
 			className={cn(
-				"inline-flex items-center gap-1.5 h-8 pl-3 pr-1.5 rounded-full border bg-muted/40 text-sm flex-nowrap shrink-0",
+				"inline-flex items-center gap-1.5 h-9 pl-3 pr-1.5 rounded-md border bg-muted/40 text-sm flex-nowrap shrink-0",
 				className,
 			)}
 		>
