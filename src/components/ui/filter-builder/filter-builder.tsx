@@ -10,6 +10,7 @@ export function FilterBuilder({
 	filters,
 	onFiltersChange,
 	className,
+	showSearch = false,
 }: FilterBuilderProps) {
 	const fieldMap = React.useMemo(
 		() => new Map(fields.map((f) => [f.id, f])),
@@ -58,7 +59,11 @@ export function FilterBuilder({
 				);
 			})}
 
-			<FilterMenu fields={fields} onAddFilter={handleAddFilter} />
+			<FilterMenu
+				fields={fields}
+				onAddFilter={handleAddFilter}
+				showSearch={showSearch}
+			/>
 
 			{filters.length > 0 && (
 				<button

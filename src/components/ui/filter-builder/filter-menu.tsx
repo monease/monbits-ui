@@ -9,6 +9,7 @@ import type { FilterField, FilterOption, FilterValue } from "./types";
 interface FilterMenuProps {
 	fields: FilterField[];
 	onAddFilter: (filter: FilterValue) => void;
+	showSearch?: boolean;
 }
 
 type MenuState = { step: "fields" } | { step: "values"; field: FilterField };
@@ -20,7 +21,11 @@ const RELATIVE_DATE_OPTIONS = [
 	{ value: "thisMonth", label: "This month" },
 ];
 
-export function FilterMenu({ fields, onAddFilter }: FilterMenuProps) {
+export function FilterMenu({
+	fields,
+	onAddFilter,
+	showSearch = false,
+}: FilterMenuProps) {
 	const [open, setOpen] = React.useState(false);
 	const [menuState, setMenuState] = React.useState<MenuState>({
 		step: "fields",
@@ -100,7 +105,6 @@ export function FilterMenu({ fields, onAddFilter }: FilterMenuProps) {
 		setShowDatePicker(false);
 	}, []);
 
-	// Async search for asyncSelect fields
 	React.useEffect(() => {
 		if (menuState.step !== "values") return;
 		if (menuState.field.type !== "asyncSelect") return;
@@ -151,6 +155,11 @@ export function FilterMenu({ fields, onAddFilter }: FilterMenuProps) {
 		return field.options.filter((o) => o.label.toLowerCase().includes(search));
 	}, [menuState, valueSearch, asyncOptions]);
 
+	const shouldShowValueSearch =
+		menuState.step === "values" &&
+		(menuState.field.type === "asyncSelect" ||
+			(menuState.field.options && menuState.field.options.length > 6));
+
 	return (
 		<Popover open={open} onOpenChange={handleOpenChange}>
 			<PopoverTrigger asChild>
@@ -165,20 +174,20 @@ export function FilterMenu({ fields, onAddFilter }: FilterMenuProps) {
 			<PopoverContent className="w-[220px] p-0" align="start" sideOffset={4}>
 				{menuState.step === "fields" ? (
 					<>
-						{/* Search fields */}
-						<div className="p-2 border-b">
-							<div className="relative">
-								<Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
-								<Input
-									placeholder="Filter..."
-									value={fieldSearch}
-									onChange={(e) => setFieldSearch(e.target.value)}
-									className="pl-7 h-7 text-sm"
-									autoFocus
-								/>
+						{showSearch && (
+							<div className="p-2 border-b">
+								<div className="relative">
+									<Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+									<Input
+										placeholder="Filter..."
+										value={fieldSearch}
+										onChange={(e) => setFieldSearch(e.target.value)}
+										className="pl-7 h-7 text-sm"
+										autoFocus
+									/>
+								</div>
 							</div>
-						</div>
-						{/* Field list */}
+						)}
 						<div className="max-h-[300px] overflow-y-auto p-1">
 							{filteredFields.map((field) => (
 								<button
@@ -205,7 +214,6 @@ export function FilterMenu({ fields, onAddFilter }: FilterMenuProps) {
 					</>
 				) : (
 					<>
-						{/* Header with back button */}
 						<div className="p-2 border-b flex items-center gap-2">
 							<button
 								type="button"
@@ -219,7 +227,6 @@ export function FilterMenu({ fields, onAddFilter }: FilterMenuProps) {
 							</span>
 						</div>
 
-						{/* Values */}
 						{menuState.field.type === "date" ? (
 							<div className="p-1">
 								{!showDatePicker ? (
@@ -257,10 +264,7 @@ export function FilterMenu({ fields, onAddFilter }: FilterMenuProps) {
 							</div>
 						) : (
 							<>
-								{/* Search for values */}
-								{(menuState.field.type === "asyncSelect" ||
-									(menuState.field.options &&
-										menuState.field.options.length > 6)) && (
+								{shouldShowValueSearch && (
 									<div className="p-2 border-b">
 										<div className="relative">
 											<Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
@@ -275,7 +279,6 @@ export function FilterMenu({ fields, onAddFilter }: FilterMenuProps) {
 									</div>
 								)}
 
-								{/* Options list */}
 								<div className="max-h-[250px] overflow-y-auto p-1">
 									{asyncLoading ? (
 										<div className="px-2 py-4 text-sm text-muted-foreground text-center">

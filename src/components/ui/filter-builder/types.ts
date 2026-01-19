@@ -32,6 +32,11 @@ export interface FilterBuilderProps {
 	filters: FilterValue[];
 	onFiltersChange: (filters: FilterValue[]) => void;
 	className?: string;
+	/**
+	 * Show search input in the filter dropdown.
+	 * Defaults to false. Enable for long lists of fields/options.
+	 */
+	showSearch?: boolean;
 }
 
 export interface UseFilterBuilderOptions {
