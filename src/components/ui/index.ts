@@ -6,6 +6,7 @@ export * from "./button";
 export * from "./calendar";
 export * from "./card";
 export * from "./checkbox";
+export * from "./combobox";
 export * from "./data-table";
 export * from "./data-table-pagination";
 export * from "./date-range-picker";
